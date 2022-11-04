@@ -1,0 +1,219 @@
+    // Spinner
+    var spinner = function () {
+        setTimeout(function () {
+            if ($('#spinner').length > 0) {
+                $('#spinner').removeClass('show');
+            }
+        }, 1);
+    };
+    spinner();
+$(function () {
+    $('#form').submit(function (e) {
+        e.preventDefault();
+    })
+
+    // $('.show-by').hide();
+    $('.product').click(function (e) {
+        e.preventDefault();
+        var that = $(this).css('border', '2px solid blue');
+        var show = that.parent();
+        var showfield = show.find('.show-by');
+        showfield.show();
+    });
+
+    $('.plus').click(function (e) {
+        e.preventDefault();
+        var that = $(this);
+        var plus = that.parent();
+        var qty = plus.find('.qty');
+        var value = qty.val();
+
+        var product_that = that.parent();
+        var product_find = product_that.find('#product_name');
+        var product_name = product_find.val();
+
+        var price_that = that.parent();
+        var price_find = price_that.find('#product_price');
+        var price = price_find.val();
+
+        var id_that = that.parent();
+        var id_find = id_that.find('.id');
+        var id = id_find.val();
+
+        var img_that = that.parent();
+        var img_find = img_that.find('#product_img');
+        var img = img_find.val();
+
+        var delivery_that = that.parent();
+        var delivery_find = delivery_that.find('#product_delivery');
+        var delivery = delivery_find.val();
+
+
+        if (value < 1) {
+            value
+        } else {
+            qty.val(++value);
+        }
+        console.log(value);
+
+        $.ajax({
+            url: 'function/action.php',
+            type: 'post',
+            data: {
+                id: id,
+                qty: value,
+                product: product_name,
+                price: price,
+                delivery: delivery,
+                img: img,
+                cart: 1
+            },
+            success: function (data) {
+                location.reload();
+            }
+        });
+    });
+
+    $('.minus').click(function () {
+        var that = $(this);
+        var minus = that.parent();
+        var qty = minus.find('.qty');
+        var value = qty.val();
+
+        var id_paren = that.parent();
+        var id_find = id_paren.find('.id');
+        var id = id_find.val();
+
+        if (value <= 1) {
+            value = 0;
+        } else {
+            qty.val(--value);
+        }
+
+        $.ajax({
+            url: 'function/action.php',
+            type: 'post',
+            data: {
+                id: id,
+                qty: value,
+                minus: 1
+            },
+            success: function (data) {
+                // alert(data)
+                location.reload();
+            }
+        })
+    });
+
+    $('#name').click(function () {
+        $('#name').focus();
+        $('#name').focusout(function () {
+            if ($('#name').val() == "") {
+                $('#text-error').text('กรุณากรอกที่อยู่ผู้รับ');
+                $('#text-error').css('display', 'block');
+            }
+        })
+    });
+
+    $('#name').focusout(function () {
+        if ($('#name').val() != "") {
+            $('#text-error').css('display', 'none');
+        }
+    });
+    
+
+    $('#phone').click(function () {
+        $('#phone').keyup(function () {
+            if (isNaN($('#phone').val())) { 
+                $('#text-phoen-error').text('ระบุเป็นตัวเลข 0-9');
+                $('#text-phoen-error').css('display', 'block');
+            }
+                
+        });
+        $('#phone').focusout(function () {
+            if ($('#phone').val() == "") {
+                $('#text-phoen-error').text('กรุณากรอกเบอร์มือถือ');
+                $('#text-phoen-error').css('display', 'block');
+                return false;
+            }
+        })
+    });
+
+    $('#phone').focusout(function () {
+        if ($('#phone').val() != "") {
+            $('#text-phoen-error').css('display', 'none');
+        }
+        if(isNaN($('#phone').val())) {
+            $('#text-phoen-error').text('ระบุเป็นตัวเลข 0-9');
+            $('#text-phoen-error').css('display', 'block');
+        }
+    });
+
+    $('#address').click(function () {
+        $('#address').focusout(function () {
+            if ($('#address').val() == "") {
+                $('#text-address-error').text('กรุณากรอกที่อยู่ผู้รับ');
+                $('#text-address-error').css('display', 'block');
+                return false;
+            }
+        })
+    });
+
+    $('#address').focusout(function () {
+        if ($('#address').val() != "") {
+            $('#text-address-error').css('display', 'none');
+        }
+    });
+
+
+    $('#formOrder').submit(function (e) {
+        e.preventDefault();
+        if ($('input#product').val() == '') {
+            console.log($('input#product').val());
+            $('#error-all').text('ไม่มีสินค้าใรตะกร้า!!');
+            $('#error-all').css('display', 'block');
+            return false;
+        }
+        var fd = new FormData();
+        var names = $('#name').val();
+        var phone = $('#phone').val();
+        var address = $('#address').val();
+        var payment = $('#order').val();
+        var line_notify = $('#line_notify').val();
+        var file = $('#file')[0].files;
+        if (names == "" || phone == "" || address == "" || payment == "") {
+            $('#error-all').text('กรุณากรอกข้อมูลให้ครบถ้วน!!');
+            $('#error-all').css('display', 'block');
+            return false;
+        } else if (payment == "") {
+            $('#error-all').text('กรุณาเลือกการชำระเงิน!!')
+            $('#error-all').css('display', 'block');
+        } else {
+            fd.append('name', names);
+            fd.append('phone', phone);
+            fd.append('address', address);
+            fd.append('line_notify',line_notify);
+            fd.append('file', file[0]);
+            fd.append('order', 1);
+            $.ajax({
+                url: 'function/action.php',
+                type: 'post',
+                data: fd,
+                async: false,
+                contentType: false,
+                processData:false,
+                success: function (data) {
+                    window.location = "thakyou.php?code="+data;
+                }
+            });
+        }
+    });
+
+    $('#list-online-list').click(function () {
+        $('#order').val('online');
+    });
+
+    $('#list-cod-list').click(function () {
+        $('#order').val('cod');
+    })
+});
