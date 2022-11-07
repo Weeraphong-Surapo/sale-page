@@ -68,6 +68,42 @@ if (isset($_POST['minus'])) {
     }
 }
 
+
+if(isset($_POST['check_order'])){
+    $code = $_POST['code'];
+    $sql = "SELECT * FROM tb_users_delivery WHERE code_delivery = '$code'";
+    $query = $conn->query($sql);
+    $fetch = $query->fetch_array();
+    $arr = array('error'=>'no');
+    if(mysqli_num_rows($query) != 1){
+        echo json_encode($arr);
+    }else{
+        echo json_encode($fetch);
+    }
+}
+
+
+if(isset($_POST['login'])){
+    $sql = "SELECT * FROM tb_admin WHERE username = '$_POST[username]'";
+    $query = $conn->query($sql);
+    $fetch = $query->fetch_array();
+    if(mysqli_num_rows($query) == 1){
+        if($fetch['username'] != $_POST['username']){
+            echo 'user-wrong';
+        }else{
+            if($fetch['password'] != $_POST['password']){
+                echo 'pass-wrong';
+            }else{
+                $_SESSION['login'] = true;
+                echo 'login';
+            }
+        }
+    }else{
+        echo '0';
+    }
+}
+
+
 if (isset($_POST['order'])) {
     $code_delivery = rand(10000, 1000000);
     if (isset($_FILES['file'])) {

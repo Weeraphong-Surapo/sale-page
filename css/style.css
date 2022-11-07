@@ -76,7 +76,7 @@ a#sp-buy{
     text-decoration: none;
 }
 div img.img-product{
-    height: 270px;
+    height: 220px !important;
 }
 /*** Spinner ***/
 #spinner {

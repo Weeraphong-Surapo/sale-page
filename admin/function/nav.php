@@ -34,7 +34,6 @@
                             <a href="check_order.php" class="dropdown-item">เช็คการชำระเงิน</a>
                             <a href="order.php" class="dropdown-item">ออเดอร์</a>
                             <a href="delivery_success.php" class="dropdown-item">ออเดอร์ที่จัดส่งแล้ว</a>
-                            <a href="blank.html" class="dropdown-item">Blank Page</a>
                         </div>
                     </div>
                 </div>

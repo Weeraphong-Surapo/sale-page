@@ -18,6 +18,7 @@ require_once("function/check_type.php");
     <script src="js/qrcode.min.js"></script>
     <!-- Css Style -->
     <style>
+        @import url('css/check.css');
         @import url('css/style.css');
     </style>
 </head>
@@ -60,6 +61,11 @@ require_once("function/check_type.php");
                     </div>
                 </div>
                 <!-- end link -->
+                <div class="row">
+                    <div class="col-12">
+                        <button class="btn btn-primary col-12 mb-3 check_order">เช็คสถานะออเดอร์</button>
+                    </div>
+                </div>
 
 
                 <img class="img-fluid w-100" src="admin/<?php echo $img_arr['content_3']; ?>" alt="">
@@ -85,6 +91,11 @@ require_once("function/check_type.php");
                     </div>
                 </div>
                 <!-- end link -->
+                <div class="row">
+                    <div class="col-12">
+                        <button class="btn btn-primary col-12 mb-3 check_order">เช็คสถานะออเดอร์</button>
+                    </div>
+                </div>
 
 
 
@@ -163,6 +174,11 @@ require_once("function/check_type.php");
                     </div>
                 </div>
                 <!-- end link -->
+                <div class="row">
+                    <div class="col-12">
+                        <button class="btn btn-primary col-12 mb-3 check_order">เช็คสถานะออเดอร์</button>
+                    </div>
+                </div>
 
 
                 <h2 class="bg-danger p-3 text-ask rounded mb-3"><?php echo $text['header_ask']; ?></h2>
@@ -232,6 +248,11 @@ require_once("function/check_type.php");
                 </div>
                 <hr>
                 <!-- end link -->
+                <div class="row">
+                    <div class="col-12">
+                        <button class="btn btn-primary col-12 mb-3 check_order">เช็คสถานะออเดอร์</button>
+                    </div>
+                </div>
 
 
                 <!-- product -->
@@ -255,7 +276,7 @@ require_once("function/check_type.php");
 
 
                                         <?php
-                                            $total = 0;
+                                        $total = 0;
                                         if (isset($_SESSION['shopping_cart'])) {
                                             $price = 0;
                                             $delivery = 0;
@@ -319,8 +340,8 @@ require_once("function/check_type.php");
                                 while ($row = $query->fetch_assoc()) {
                             ?>
                                     <tr>
-                                        <td><?php echo $values['item_name']; ?></td>
-                                        <td>
+                                        <td width="24%"><?php echo $values['item_name']; ?></td>
+                                        <td width="37%">
                                             <form action="">
                                                 <input type="hidden" name="id" class="id" id="id" value="<?php echo $row['id']; ?>">
                                                 <input type="hidden" name="product_name" id="product_name" value="<?php echo $row['product_name']; ?>">
@@ -332,7 +353,7 @@ require_once("function/check_type.php");
                                                 <i class="btn btn-primary plus">+</i>
                                             </form>
                                         </td>
-                                        <td><?php echo number_format($values['item_price']); ?></td>
+                                        <td width="20%"><?php echo number_format($values['item_price']); ?></td>
                                     </tr>
                             <?php }
                             } ?>
@@ -355,7 +376,7 @@ require_once("function/check_type.php");
                         <div class="col-12 text-center">
                             <div class="list-group list-group-horizontal" id="list-tab" role="tablist">
                                 <div class="col-6">
-                                    <a class="list-group-item list-group-item-action " id="list-online-list" data-bs-toggle="list" href="#list-online" role="tab" aria-controls="list-home" onclick="render_qr(<?php echo $total;?>,<?php echo $link_prompay; ?>)">โอนเงินเข้าบัญชี</a>
+                                    <a class="list-group-item list-group-item-action " id="list-online-list" data-bs-toggle="list" href="#list-online" role="tab" aria-controls="list-home" onclick="render_qr(<?php echo $total; ?>,<?php echo $link_prompay; ?>)">โอนเงินเข้าบัญชี</a>
                                 </div>
                                 <div class="col-6">
                                     <a class="list-group-item list-group-item-action" id="list-cod-list" data-bs-toggle="list" href="#list-cod" role="tab" aria-controls="list-profile">เก็บเงินปลายทาง</a>
@@ -367,19 +388,20 @@ require_once("function/check_type.php");
                                 <div class="tab-pane fade show " id="list-online" role="tabpanel" aria-labelledby="list-home-list">
                                     <div class="box border border-primary border-5 p-2" style="z-index: 100;">
 
-                                    <?php if($total == 0){ echo "<div class='alert alert-warning fs-bold'>กรุณาเลือกสินค้าต้องการก่อน</div>";}else{?>
-                                        <div class="row" align="center">
- 
-                                        <div class="alert alert-primary p-3 m-0 fw-bold" style="border-bottom:7px solid skyblue;" align="center">ชำระเงินด้วยคิวอาโค้ด แล้วแนบสลิป</div>
-                                        <div id="qrcode" class="py-2" align="center"></div>
+                                        <?php if ($total == 0) {
+                                            echo "<div class='alert alert-warning fs-bold'>กรุณาเลือกสินค้าต้องการก่อน</div>";
+                                        } else { ?>
+                                            <div class="row" align="center">
 
-                                        </div>
-                                        <?php }?>
+                                                <div class="alert alert-primary p-3 m-0 fw-bold" style="border-bottom:7px solid skyblue;" align="center">ชำระเงินด้วยคิวอาโค้ด แล้วแนบสลิป</div>
+                                                <div id="qrcode" class="py-2" align="center"></div>
+
+                                            </div>
+                                        <?php } ?>
                                     </div>
                                     <form action="" id="formOrder">
                                         <input type="hidden" name="order" id="order">
                                         <input type="hidden" name="line_notify" id="line_notify" value="<?php echo $link_notify; ?>">
-                                        <?php echo $link_prompay;?>
                                         <p style="font-size: 25px;" class="mt-5">โอนเงินแล้วอัปโหลดสลิป *</p>
                                         <input type="file" name="file" id="file" class="form-control">
                                 </div>
@@ -396,6 +418,44 @@ require_once("function/check_type.php");
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="Modal_check_order" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">ตรวจสอบออเดอร์</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="">หมายเลขออเดอร์</label>
+                    <input type="text" name="check_code" id="check_code" class="form-control">
+                    <div class="alert alert-warning mt-3" style="display: none;" id="no_order">ไม่มีหมาเลขออเดอร์นี้</div>
+                    <div style="display: none;" id="result">
+                        <div class="progress mt-3">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-label="Example with label" style="width: 33%;" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">กำลังตรวจสอบ</div>
+                        </div>
+                    </div>
+
+                    <div style="display: none;" id="result2">
+                        <div class="progress mt-3">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-label="Example with label" style="width: 66%;" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">กำลังเตรียมสินค้า</div>
+                        </div>
+                    </div>
+
+                    <div style="display: none;" id="result3">
+                        <div class="progress mt-3">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-label="Example with label" style="width: 100%;" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">จัดส่งเรียบร้อย</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                    <button type="button" class="btn btn-primary" id="submit_code">เช็คสถานะ</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <!-- JavaScript Bundle with Popper -->
@@ -408,8 +468,8 @@ require_once("function/check_type.php");
 <script>
     var qr_dom = document.getElementById('qrcode');
 
-    function render_qr(x,y) {
-        var acc_id = '0'+y;
+    function render_qr(x, y) {
+        var acc_id = '0' + y;
         var amount = x;
         var txt = PromptPayQR.gen_text(acc_id, amount);
 

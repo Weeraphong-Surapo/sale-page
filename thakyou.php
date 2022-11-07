@@ -27,8 +27,9 @@ require_once("function/check_type.php");
          <p style="font-size: 20px;">"ขอบคุณสำหรับคำสั่งซื้อ<br>ทีมงานจะตรวจสอบและยืนยันโดยเร็วที่สุด"</p>
          <!-- <i class='fas fa-donate' style='font-size:90px;color:red'></i> -->
          <h4 class="fw-bold text-success" style="font-size: 35px;">หมายเลขคำสั่งซื้อ # <?php echo $_GET['code']?></h4>
+         <h2>ตรวจสอบสถานะคำสั่งซื้อ</h2>
          <div class="d-flex justify-content-center">
-             <img src="assets/img/success.png" class="img-fluid d-block my-3"  style="height: 150px;" alt="">
+             <img src="assets/img/success.png" class="img-fluid d-block my-3"  style="height: 120px;" alt="">
          </div>
          
          <h1 class="fw-bold">กรณีเก็บเงินปลายทาง</h1>

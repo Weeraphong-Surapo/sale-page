@@ -1,6 +1,7 @@
 <?php
 require_once("function/head.php");
 require_once("function/nav.php");
+
 ?>
 
 <div class="container-fluid px-4 mt-4">
@@ -10,7 +11,7 @@ require_once("function/nav.php");
         <table id="table_order" class="table table-bordered table table-striped table-hover text-center">
             <thead class="bg-primary text-white">
                 <tr>
-                    <th style="text-align: center;">เลขออเดอร์</th>
+                    <th style="text-align: center;">ออเดอร์</th>
                     <th style="text-align: center;">ออเดอร์</th>
                     <th style="text-align: center;">จัดการ</th>
                 </tr>
@@ -26,13 +27,14 @@ require_once("function/nav.php");
 
 
                         <tr>
-                            <td><?= $row['code_delivery']; ?></td>
-                            <td>
-                                <button class="btn btn-primary" id="view_order" data-id="<?php echo $row['id']; ?>">ดูออเดอร์</button>
+                            <td width="12%"><?= $row['code_delivery']; ?></td>
+                            <td width="13%">
+                                <button class="btn btn-primary view_order"  data-id="<?php echo $row['id']; ?>">ดู</button>
                             </td>
-                            <td>
-                                <button class="btn btn-success" id="openmodalcode" data-id="<?php echo $row['id']; ?>">กรอกหมาเลขพัสดุ</button>
-                                <button class="btn btn-danger" id="cancel" data-id="<?php echo $row['id']; ?>">ยกเลิก</button>
+                            <td width="25%">
+                                
+                                <button class="btn btn-success m-0" id="order_success" data-id="<?php echo $row['id']; ?>">จัดส่งออเดอร์</button>
+                                <button class="btn btn-danger m-0" id="cancel" data-id="<?php echo $row['id']; ?>">ยกเลิก</button>
                             <?php } ?>
                             </td>
                         </tr>
@@ -52,42 +54,32 @@ require_once("function/nav.php");
                 <h1 class="modal-title fs-5" id="exampleModalLabel">ออเดอร์</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <input type="hidden" name="pdf" id="pdf">
+            <?php 
+
+ ?>
             <div class="modal-body" id="itemorder">
 
+            <?php
+         
+            ?>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <a href="function/MyReport.pdf?pdf" target="_blank" class="btn btn-primary" >ปริ้น PDF</a>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="modal_code" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">กรอกหมายเลขพัสดุ</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <label for="">กรอกเลขพัสดุของคุณ</label>
-                    <input type="text" name="code_delivery" id="code_delivery" class="form-control">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                <button type="button" class="btn btn-primary" id="transport">เสร็จสิ้น</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 <?php require_once("function/footer.php"); ?>
+<script src="js/swal.js"></script>
 <script>
     $(function() {
         $('#table_order').DataTable();
 
-        $('#view_order').click(function() {
+        $('.view_order').click(function() {
             var id = $(this).attr('data-id');
             $.ajax({
                 url: 'function/action.php',
@@ -97,31 +89,33 @@ require_once("function/nav.php");
                     view_order: 1
                 },
                 success: function(data) {
+                    $('#pdf').val('true');
                     $('#itemorder').html(data);
                     $('#modalorder').modal('show');
                 }
             });
         });
 
-        $('#openmodalcode').click(function(){
-            var id = $(this)
-            $('#modal_code').modal('show')
-        })
-
-        $('#transport').click(function(){
-            var transport = $('#transport').val();
-            $.ajax({
-                url:'function/action.php',
-                type:'post',
-                data:{
-                    transport:transport,
-                    code_transport:1
-                },
-                success:function(data){
-
-                }
-            })
+     $('#order_success').click(function(){
+        event.preventDefault();
+        var id = $(this).attr('data-id');
+        bootbox.confirm('จัดส่งสินค้าแล้วใช่ไหม?',function(result){
+            if(result){
+                $.ajax({
+                    url:'function/action.php',
+                    type:'post',
+                    data:{
+                        id:id,
+                        update_order:1
+                    },
+                    success:function(data){
+                        Swal('success','จัดส่งเรียบร้อย','','delivery_success.php');
+                    }
+                });
+            }
         });
+     });
+
 
         $('#cancel').click(function(){
             var id = $(this).attr('data-id');
@@ -135,7 +129,7 @@ require_once("function/nav.php");
                             cancel_order:1
                         },
                         success:function(data){
-                            location.reload();
+                            Swal('success','ยกเลิกเรียบร้อย','','order.php');
                         }
                     })
                 }

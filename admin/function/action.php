@@ -1,6 +1,27 @@
 <?php 
     require_once("../../function/connect.php");
+    require_once __DIR__ . '/vendor/autoload.php';
 
+    $defaultConfig = (new Mpdf\Config\ConfigVariables())->getDefaults();
+    $fontDirs = $defaultConfig['fontDir'];
+    
+    $defaultFontConfig = (new Mpdf\Config\FontVariables())->getDefaults();
+    $fontData = $defaultFontConfig['fontdata'];
+    
+    $mpdf = new \Mpdf\Mpdf([
+        'fontDir' => array_merge($fontDirs, [
+            __DIR__ . '/tmp',
+        ]),
+        'fontdata' => $fontData + [ // lowercase letters only in font key
+            'sarabun' => [
+                'R' => 'THSarabunNew.ttf',
+                'I' => 'THSarabunNew Italic.ttf',
+                'B' => 'THSarabunNew Bold.ttf',
+                'BI' => 'THSarabunNew BoldItalic.ttf'
+            ]
+        ],
+        'default_font' => 'sarabun'
+    ]);
     if(isset($_POST['modalcontent'])){
         $content = array('img'=>$_POST['old_img'],'id'=>$_POST['id']);
         echo json_encode($content);
@@ -162,38 +183,59 @@
         $del_order = $conn->query("DELETE FROM tb_order WHERE order_id = '$_POST[id]'");
     }
 
-    if(isset($_POST['code_transport'])){
-        $sql = "UPDATE tb_users_delivery SET code_transport = '$transport' ";
-    }
+
+
 
     if(isset($_POST['update_prompay'])){
         $sql = "UPDATE tb_links SET link = '$_POST[new_prompay]' WHERE id = '$_POST[id]'";
         $conn->query($sql);
     }
 
+    if(isset($_POST['update_order'])){
+        $sql = "UPDATE tb_users_delivery SET status = 2 WHERE id = '$_POST[id]'";
+        $conn->query($sql);
+    }
+
+
     if(isset($_POST['view_order'])){
         $sql = "SELECT * FROM tb_order WHERE order_id = '$_POST[id]'";
+        $sql_user = "SELECT * FROM tb_users_delivery WHERE id = '$_POST[id]'";
+        $query_user = $conn->query($sql_user);
+        $fect_user = $query_user->fetch_assoc();
         $query = $conn->query($sql);
         $outp = '';
-        $outp .= '<table class="table text-center" >
+        $outp .= '<center style="text-align:center;"><b style="font-size:25px;">รายการออเดอร์</b></center>';
+        $outp .= '<table class="table text-center" width="100%" >
         <thead class="bg-primary text-white">
         <tr>
-        <th>สินค้า</th>
-        <th>ราคา</th>
-        <th>จำนวน</th>
+        <th style="border: 1px solid #ddd; padding: 8px; padding-top: 12px; padding-bottom: 12px; text-align: center; background-color: #009CFF; color: white; font-size:20;">สินค้า</th>
+        <th style="border: 1px solid #ddd; padding: 8px; padding-top: 12px; padding-bottom: 12px; text-align: center; background-color: #009CFF; color: white; font-size:20;">ราคา</th>
+        <th style="border: 1px solid #ddd; padding: 8px; padding-top: 12px; padding-bottom: 12px; text-align: center; background-color: #009CFF; color: white; font-size:20;">จำนวน</th>
         </tr>
         </thead>';
-        $total = 0;
+        $total = 0; $delivery = 0;
         foreach($query as $data){
+            $delivery += $data['delivery'];
+            $total += ($data['price'] * $data['qty']) + $data['delivery'];
             $outp .= '
                 <tbody>
                 <tr>
-                <td>'.$data['product'].'</td>
-                <td>'.$data['price'].'</td>
-                <td>'.$data['qty'].'</td>
-                </tr>
-                </tbody>';
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: center; font-size:18;">'.$data['product'].'</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: center; font-size:18;">'.number_format($data['price']).'</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: center; font-size:18;">'.$data['qty'].'</td>
+                </tr>';
             }
-            $outp .= '</table>';
+            $outp .= '<tr ><td colspan="3" style="border: 1px solid #ddd; padding: 8px; text-align: center; font-size:18;">ค่าจัดส่ง '.$delivery.' บาท</td></tr>';
+            $outp .= '<tr ><td colspan="3" style="border: 1px solid #ddd; padding: 8px; text-align: center; font-size:18;"> ราคารวม '.number_format($total).' บาท</td></tr>';
+            $outp .= '</tbody></table><hr>';
+            $outp .= '<b  style="font-size:30;"  >ที่อยู่ผู้รับ</b><br>';
+            $outp .= '<p style="font-size:20; margin-top: 15px;">ชื่อผู้รับ : '.$fect_user['name'].'</p>';
+            $outp .= '<p style="font-size:20;">เบอร์โทร : '.$fect_user['phone'].'</p>';
+            $outp .= '<p style="font-size:20;">ที่อยู่ : '.$fect_user['address'].'</p><hr>';
+            ob_start();
         echo $outp;
+        $html = ob_get_contents();
+        $mpdf->WriteHTML($html);
+        $mpdf->Output("MyReport.pdf");
+        ob_end_flush();
     }

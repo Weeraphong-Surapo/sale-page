@@ -215,5 +215,53 @@ $(function () {
 
     $('#list-cod-list').click(function () {
         $('#order').val('cod');
-    })
+    });
+
+    $('.check_order').click(function () {
+        $('#Modal_check_order').modal('show')
+    });
+
+    $('#submit_code').click(function () {
+        $('#no_order').css('display','none');
+        $('#result').css('display','none');
+        $('#result2').css('display','none');
+        $('#result3').css('display','none');
+        var code = $('#check_code').val();
+        if (code == "") {
+            alert('')
+        } else {
+            $.ajax({
+                url: 'function/action.php',
+                type: 'post',
+                dataType:'json',
+                data: {
+                    check_order: 1,
+                    code: code
+                },
+                success: function (data) {
+                    console.log(data.error);
+                    if (data.error == 'no') {
+                        $('#no_order').css('display', 'block');
+                    } else {
+                        if (data.status == 0) {
+                            $('#result').css('display', 'block');
+                        } else if (data.status == 1) {
+                            $('#result2').css('display', 'block');
+                        }else {
+                            $('#result3').css('display', 'block');
+                        }
+                    }
+                }
+            });
+        }
+    });
+
+    $('.step').each(function(index, element) {
+        // element == this
+        $(element).not('.active').addClass('done');
+        $('.done').html('<i class="icon-ok"></i>');
+        if ($(this).is('.active')) {
+            return false;
+        }
+    });
 });
