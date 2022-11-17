@@ -48,13 +48,11 @@ $(function () {
         var delivery_find = delivery_that.find('#product_delivery');
         var delivery = delivery_find.val();
 
-
         if (value < 1) {
             value
         } else {
             qty.val(++value);
         }
-        console.log(value);
 
         $.ajax({
             url: 'function/action.php',
@@ -69,7 +67,7 @@ $(function () {
                 cart: 1
             },
             success: function (data) {
-                location.reload();
+                location.reload()
             }
         });
     });
@@ -99,8 +97,7 @@ $(function () {
                 minus: 1
             },
             success: function (data) {
-                // alert(data)
-                location.reload();
+                    location.reload();
             }
         })
     });
@@ -159,6 +156,22 @@ $(function () {
         })
     });
 
+    $('#email').click(function () {
+        $('#email').focusout(function () {
+            if ($('#email').val() == "") {
+                $('#text-email-error').text('กรุณากรอกที่อยู่ Email');
+                $('#text-email-error').css('display', 'block');
+                return false;
+            }
+        })
+    });
+
+    $('#email').focusout(function () {
+        if ($('#email').val() != "") {
+            $('#text-email-error').css('display', 'none');
+        }
+    });
+
     $('#address').focusout(function () {
         if ($('#address').val() != "") {
             $('#text-address-error').css('display', 'none');
@@ -179,9 +192,10 @@ $(function () {
         var phone = $('#phone').val();
         var address = $('#address').val();
         var payment = $('#order').val();
+        var email = $('#email').val();
         var line_notify = $('#line_notify').val();
         var file = $('#file')[0].files;
-        if (names == "" || phone == "" || address == "" || payment == "") {
+        if (names == "" || phone == "" || address == "" || payment == "" || email == "") {
             $('#error-all').text('กรุณากรอกข้อมูลให้ครบถ้วน!!');
             $('#error-all').css('display', 'block');
             return false;
@@ -192,22 +206,31 @@ $(function () {
             fd.append('name', names);
             fd.append('phone', phone);
             fd.append('address', address);
+            fd.append('email', email);
             fd.append('line_notify',line_notify);
             fd.append('file', file[0]);
             fd.append('order', 1);
+            $('div input#order').val('โปรดรอ...')
             $.ajax({
                 url: 'function/action.php',
                 type: 'post',
                 data: fd,
+                beforeSend: function () {
+                        $('div input#order').attr('disabled','disabled')
+                    
+                },
                 async: false,
                 contentType: false,
                 processData:false,
                 success: function (data) {
+                    $('div input#order').val('โปรดรอ...')
                     window.location = "thakyou.php?code="+data;
                 }
             });
         }
     });
+
+
 
     $('#list-online-list').click(function () {
         $('#order').val('online');
@@ -265,3 +288,4 @@ $(function () {
         }
     });
 });
+

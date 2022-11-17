@@ -27,7 +27,9 @@ require_once("function/check_type.php");
          <p style="font-size: 20px;">"ขอบคุณสำหรับคำสั่งซื้อ<br>ทีมงานจะตรวจสอบและยืนยันโดยเร็วที่สุด"</p>
          <!-- <i class='fas fa-donate' style='font-size:90px;color:red'></i> -->
          <h4 class="fw-bold text-success" style="font-size: 35px;">หมายเลขคำสั่งซื้อ # <?php echo $_GET['code']?></h4>
-         <h2>ตรวจสอบสถานะคำสั่งซื้อ</h2>
+         <span class="fw-bold text-primary fs-5">ตรวจสถานะ ที่หน้าหลัก</span>
+         <img src="assets/img/check_order.jpg" alt="" class="img-fluid">
+         <a href="index.php" class="fs-5">กลับหน้าแรก</a>
          <div class="d-flex justify-content-center">
              <img src="assets/img/success.png" class="img-fluid d-block my-3"  style="height: 120px;" alt="">
          </div>

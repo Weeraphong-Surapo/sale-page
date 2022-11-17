@@ -31,8 +31,8 @@ require_once("function/nav.php");
                                 <button class="btn btn-primary view_order"  data-id="<?php echo $row['id']; ?>">ดู</button>
                             </td>
                             <td width="25%">
-                                
-                                <button class="btn btn-success m-0" id="openmodalcode" data-id="<?php echo $row['id']; ?>">เปลี่ยนเลขพัสดุ</button>
+                   
+                                <button class="btn btn-success m-0">จัดส่งเรียบร้อย</button>
                             <?php } ?>
                             </td>
                         </tr>
@@ -69,27 +69,6 @@ require_once("function/nav.php");
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="modal_code" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">กรอกหมายเลขพัสดุ</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <label for="">กรอกเลขพัสดุของคุณ</label>
-                    <input type="hidden" name="id_code" id="id_code">
-                    <input type="text" name="code_delivery_edit" id="code_delivery_edit" class="form-control">
-                    <p id="text-warning" style="display: none;" class="text-danger"></p>
-                </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                <button type="button" class="btn btn-primary" id="transport_edit">เสร็จสิ้น</button>
-            </div>
-        </div>
-    </div>
-</div>
 <?php require_once("function/footer.php"); ?>
 <script src="js/swal.js"></script>
 <script>
@@ -111,34 +90,6 @@ require_once("function/nav.php");
                     $('#modalorder').modal('show');
                 }
             });
-        });
-
-        $('#openmodalcode').click(function(){
-            var id = $(this).attr('data-id');
-            $('#id_code').val(id);
-            $('#modal_code').modal('show')
-        })
-
-        $('#transport_edit').click(function(){
-            var transport = $('#code_delivery_edit').val();
-            var id_code = $('#id_code').val();
-            if(transport == ""){
-                $('#text-warning').text('กรุณากรอกเลขพัสดุ');
-                $('#text-warning').css('display','block');
-            }else{
-                $.ajax({
-                    url:'function/action.php',
-                    type:'post',
-                    data:{
-                        code_delivery_edit:transport,
-                        id_code:id_code,
-                        code_transport_edit:1
-                    },
-                    success:function(data){
-                        Swal('success','แก้ไขเรียบร้อย','','delivery_success.php');
-                    }
-                })
-            }
         });
 
     });

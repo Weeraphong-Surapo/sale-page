@@ -1,6 +1,7 @@
 <?php
 require_once("connect.php");
-// require_once("swal.php");
+
+
 session_start();
 
 // btn plus product qty
@@ -18,22 +19,13 @@ if (isset($_POST['cart'])) {
                 'item_quantity' => 1
             );
             $_SESSION['shopping_cart'][$count] = $item_arry;
-            echo 'new';
         } else {
             $item_arry_id = array_column($_SESSION['shopping_cart'], 'item_id');
             if (in_array($_POST['id'], $item_arry_id)) {
-                $item_arry = array(
-                    'item_id' => $_POST['id'],
-                    'item_name' => $_POST['product'],
-                    'item_img' => $_POST['img'],
-                    'item_price' => $_POST['price'],
-                    'item_delivery' => $_POST['delivery'],
-                    'item_quantity' => 1
-                );
                 foreach ($_SESSION['shopping_cart'] as $key => $values) {
                     if ($values['item_id'] == $_POST['id'])
-                        $_SESSION['shopping_cart'][$key]['item_quantity'] = $_POST['qty'];
-                }
+                        $count = $_SESSION['shopping_cart'][$key]['item_quantity'] = $_POST['qty'];
+                    }
             }
         }
     } else {
@@ -106,6 +98,7 @@ if(isset($_POST['login'])){
 
 if (isset($_POST['order'])) {
     $code_delivery = rand(10000, 1000000);
+    echo $code_delivery;
     if (isset($_FILES['file'])) {
         $file = rand(1000, 100000) . "-" . $_FILES['file']['name'];
         $file_loc = $_FILES['file']['tmp_name'];
@@ -118,9 +111,9 @@ if (isset($_POST['order'])) {
         $fainal = str_replace(' ', '-', $new_file_name);
         $newname = 'upload/' . $fainal;
         move_uploaded_file($file_loc, $folder . $fainal);
-        $sql = "INSERT INTO `tb_users_delivery`(`name`, `phone`, `address`,`img_online`,`code_delivery`,`status`) VALUES ('$_POST[name]','$_POST[phone]','$_POST[address]','$newname','$code_delivery' ,'0')";
+        $sql = "INSERT INTO `tb_users_delivery`(`name`, `phone`, `address`,`img_online`,`email`,`code_delivery`,`status`) VALUES ('$_POST[name]','$_POST[phone]','$_POST[address]','$newname','$_POST[email]','$code_delivery' ,'0')";
     } else {
-        $sql = "INSERT INTO `tb_users_delivery`(`name`, `phone`, `address`,`code_delivery`,`status`) VALUES ('$_POST[name]','$_POST[phone]','$_POST[address]','$code_delivery' ,'1')";
+        $sql = "INSERT INTO `tb_users_delivery`(`name`, `phone`, `address`,`email`,`code_delivery`,`status`) VALUES ('$_POST[name]','$_POST[phone]','$_POST[address]','$_POST[email]','$code_delivery' ,'1')";
     }
     $user2 = $conn->query($sql);
     $order_id = mysqli_insert_id($conn);
@@ -132,7 +125,6 @@ if (isset($_POST['order'])) {
             $delivery = $values['item_delivery'];
             $order = $conn->query("INSERT INTO `tb_order`(`id`, `order_id`, `product`, `qty`, `price`, `delivery`,`code_delivery`) VALUES (NULL,$order_id,'$name','$qty','$price',$delivery,'$code_delivery')");
         }
-        echo $code_delivery;
         $sToken = "$_POST[line_notify]";
         $sMessage = "มีการสั่งออเดอร์\n";
         $sMessage .= "จากคุณ : " . $_POST['name'] . "\n";
@@ -155,6 +147,8 @@ if (isset($_POST['order'])) {
         $result = curl_exec($chOne);
 
 
-        unset($_SESSION['shopping_cart']);
     }
+
+    unset($_SESSION['shopping_cart']);
+
 }
